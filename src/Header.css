@@ -1,0 +1,23 @@
+.site-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: #ea312f;
+  color: white;
+  width: 100%;
+}
+
+.site-header .info h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.site-header .info h2 span {
+  font-size: 0.65rem;
+  font-weight: 400;
+}

@@ -140,7 +140,7 @@ function Pokedex({ onReturn, onSearch }) {
               )
             )}
 
-            <button lassName="page-btn" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+            <button className="page-btn" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
               Next 
             </button>
           </div>

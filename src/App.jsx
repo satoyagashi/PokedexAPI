@@ -95,25 +95,13 @@ function App() {
     <div className="pokemon-list-page">
       <div className="list-topbar">
         <div className="topbar-left">
-          <button
-            className="return-btn"
-            onClick={() => {
-              setSelectedPokemon('')
-              setView('pokenav')
-            }}
-          >
+          <button className="return-btn" onClick={() => { setSelectedPokemon(''); setView('pokenav') }}>
             Pokenav
           </button>
         </div>
         <div className="topbar-center">
           <div className="list-search">
-            <input
-              type="text"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Search Pokémon…"
-            />
+            <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}onKeyDown={handleKeyDown} placeholder="Search Pokémon…"/>
             <button onClick={handleSearchSubmit}>Fetch Pokémon</button>
           </div>
         </div>
@@ -146,10 +134,7 @@ function App() {
 
           <div className="pagination">
             <button
-              className="page-btn"
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
+              className="page-btn" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
               Previous
             </button>
 
@@ -159,21 +144,13 @@ function App() {
                   …
                 </span>
               ) : (
-                <button
-                  className={`page-btn${p === currentPage ? ' active' : ''}`}
-                  key={p}
-                  onClick={() => goToPage(p)}
-                >
+                <button className={`page-btn${p === currentPage ? ' active' : ''}`} key={p} onClick={() => goToPage(p)}>
                   {p}
                 </button>
               )
             )}
 
-            <button
-              className="page-btn"
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
+            <button className="page-btn" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
               Next
             </button>
           </div>

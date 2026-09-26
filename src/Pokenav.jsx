@@ -75,11 +75,7 @@ function Pokenav({ onReturn, initialPokemon = '' }) {
           <div className="screen-upper">
             <div className="artwork-display">
               {value?.id ? (
-                <img
-                  className="pokemon-artwork"
-                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${value.id}.png`}
-                  alt={value?.name || 'Pokemon'}
-                />
+                <img className="pokemon-artwork" src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${value.id}.png`} alt={value?.name || 'Pokemon'}/>
               ) : (
                 <div className="artwork-placeholder"></div>
               )}
@@ -95,13 +91,7 @@ function Pokenav({ onReturn, initialPokemon = '' }) {
                 </div>
 
                 <div className="btn">
-                  <input
-                    type="text"
-                    value={pokemon}
-                    onChange={handleInputChange}
-                    placeholder="Search Pokemon"
-                    onKeyDown={(e) => e.key === 'Enter' && handleBtn()}
-                  />
+                  <input type="text" value={pokemon} onChange={handleInputChange} placeholder="Search Pokemon" onKeyDown={(e) => e.key === 'Enter' && handleBtn()}/>
                   <button onClick={handleBtn}>Fetch Pokemon</button>
                 </div>
               </div>

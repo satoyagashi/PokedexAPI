@@ -5,7 +5,7 @@
 }
 
 html, body, #root {
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
@@ -20,7 +20,10 @@ body {
 
 .pokedex-screen {
   flex: 1;
-  padding: 24px;
+  padding: 28px 24px;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .pokedex-screen .pokemon-list {
@@ -45,11 +48,14 @@ body {
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .pokemon-artwork {
   width: 220px;
   height: 220px;
+  max-width: 85%;
+  max-height: 85%;
   object-fit: contain;
 }
 
@@ -58,12 +64,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
 }
 
 .name-card {
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .id-banner {
@@ -71,8 +79,10 @@ body {
   color: #fff;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   padding: 8px 14px;
+  flex-wrap: wrap;
 }
 
 .id-number {
@@ -81,7 +91,6 @@ body {
 }
 
 .pokemon-name-tag {
-  margin-left: auto;
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -97,12 +106,14 @@ body {
 
 .btn input {
   flex: 1;
+  min-width: 0;
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;
   font-size: 0.9rem;
   padding: 8px 12px;
   background: #f9f9f9;
+  font-family: inherit;
 }
 
 .btn input::placeholder {
@@ -120,6 +131,9 @@ body {
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
+  font-family: inherit;
+  touch-action: manipulation;
+  transition: background-color 0.15s;
 }
 
 .btn button:hover { 
@@ -142,6 +156,7 @@ body {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .gender-icons {
@@ -213,6 +228,7 @@ body {
   background-color: #fff;
   border-radius: 8px;
   padding: 10px 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .stat-row {
@@ -245,6 +261,7 @@ body {
   border-radius: 8px;
   overflow: hidden;
   min-height: 60px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .desc-text {
@@ -266,7 +283,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 120px;
+  margin-top: clamp(32px, 6vh, 80px);
+  padding-bottom: 24px;
   width: 100%;
 }
 
@@ -284,6 +302,7 @@ body {
   font-family: inherit;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: background-color 0.15s, transform 0.1s;
+  touch-action: manipulation;
 }
 
 .view-all-btn:hover {
@@ -306,4 +325,43 @@ body {
   font-weight: 400;
   color: #ccc;
 }
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+  .screen-upper {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .artwork-display {
+    width: 100%;
+    max-width: 310px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .pokedex-screen {
+    padding: 16px 14px;
+  }
+}
+
+@media (max-width: 400px) {
+  .btn {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn button {
+    width: 100%;
+    padding: 10px 16px;
+  }
+
+  .gender-card {
+    width: 62px;
+  }
+}
+
 

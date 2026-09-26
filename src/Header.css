@@ -1,7 +1,7 @@
 .site-header {
   display: flex;
   align-items: center;
-  padding: 14px 20px 12px 20px;
+  padding: 14px 24px 12px 24px;
   background-color: #ea312f;
   color: white;
   width: 100%;
@@ -20,6 +20,7 @@
   transition: background-color 0.15s;
   box-shadow: 2px 2px 0px rgba(0,0,0,0.15);
   font-family: inherit;
+  touch-action: manipulation;
 }
 
 .header-nav-btn:hover  { 
@@ -28,3 +29,10 @@
 .header-nav-btn:active { 
   background-color: #e0e0e0; 
 }
+
+@media (max-width: 640px) {
+  .site-header {
+    padding: 12px 16px;
+  }
+}
+

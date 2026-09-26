@@ -3,33 +3,51 @@
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
     padding: 16px;
-    width: 250px;
-    height: 250px;
+    width: 100%;
+    max-width: 280px;
+    min-height: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
+    box-sizing: border-box;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin: 0 auto;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-img {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .card-img img {
-    width: 200px;
-    height: 150px;
+    max-width: 100%;
+    width: auto;
+    height: 140px;
     object-fit: contain;
 }
 
 .card-id {
     font-size: 0.85rem;
-    color: #1a1a1a;
+    color: #666;
     font-weight: 700;
     align-self: flex-start;
 }
 
 .card-name {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
     font-weight: 700;
     color: #1a1a1a;
     align-self: flex-start;
     margin-bottom: 4px;
+    word-break: break-word;
 }
 
 .card-types {
@@ -37,4 +55,16 @@
     gap: 6px;
     flex-wrap: wrap;
     align-self: flex-start;
+    margin-top: auto;
 }
+
+.card .type-pill {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+    color: #fff;
+}
+

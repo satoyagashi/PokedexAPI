@@ -1,10 +1,10 @@
 import "./Card.css"
 
-function Card({ id, name, image, types }) {
+function Card({ id, name, image, types, onClick }) {
     const idFormatted = id ? `#${String(id).padStart(3, "0")}` : ""
 
     return (
-        <div className="card">
+        <div className="card" onClick={onClick}>
             <div className="card-img">
                 <img src={image} alt={name} />
             </div>

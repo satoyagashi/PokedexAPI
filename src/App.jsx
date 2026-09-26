@@ -56,6 +56,11 @@ function App() {
     setView('pokenav')
   }
 
+  function handleCardClick(name) {
+    setSelectedPokemon(name)
+    setView('pokenav')
+  }
+
   function handleKeyDown(e) {
     if (e.key === 'Enter') handleSearchSubmit()
   }
@@ -128,6 +133,7 @@ function App() {
                     name={p.name}
                     image={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`}
                     types={p.types}
+                    onClick={() => handleCardClick(p.name)}
                   />
                 ))}
           </div>

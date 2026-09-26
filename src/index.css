@@ -7,5 +7,13 @@
 html, body {
   width: 100%;
   overflow-x: hidden;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f4f4f7;
+  color: #1a1a2e;
+  scroll-behavior: smooth;
 }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f0f0f4; }
+::-webkit-scrollbar-thumb { background: #d0d0dc; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #b0b0bc; }

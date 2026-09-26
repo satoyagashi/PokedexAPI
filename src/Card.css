@@ -1,71 +1,115 @@
 .card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
-    padding: 16px;
-    width: 100%;
-    max-width: 280px;
-    min-height: 250px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    box-sizing: border-box;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin: 0 auto;
-    cursor: pointer;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 18px;
+  padding: 20px 16px 16px;
+  width: 100%;
+  max-width: 280px;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  margin: 0 auto;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #e8302e, #f87171);
+  opacity: 0;
+  transition: opacity 0.22s;
 }
 
 .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(232, 48, 46, 0.1);
+  border-color: rgba(232, 48, 46, 0.2);
 }
+.card:hover::before { opacity: 1; }
 
 .card-img {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0 4px;
 }
 
 .card-img img {
-    max-width: 100%;
-    width: auto;
-    height: 140px;
-    object-fit: contain;
+  max-width: 100%;
+  width: auto;
+  height: 130px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.14));
+  transition: filter 0.22s, transform 0.22s;
+}
+.card:hover .card-img img {
+  filter: drop-shadow(0 10px 20px rgba(232, 48, 46, 0.18));
+  transform: scale(1.05);
 }
 
 .card-id {
-    font-size: 0.85rem;
-    color: #666;
-    font-weight: 700;
-    align-self: flex-start;
+  font-size: 0.72rem;
+  color: #b0b0c0;
+  font-weight: 700;
+  align-self: flex-start;
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
 }
 
 .card-name {
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
-    font-weight: 700;
-    color: #1a1a1a;
-    align-self: flex-start;
-    margin-bottom: 4px;
-    word-break: break-word;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  font-weight: 700;
+  color: #1a1a2e;
+  align-self: flex-start;
+  margin-bottom: 2px;
+  word-break: break-word;
+  text-transform: capitalize;
+  letter-spacing: 0.2px;
 }
 
 .card-types {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    align-self: flex-start;
-    margin-top: auto;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 6px;
 }
 
 .card .type-pill {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-align: center;
-    color: #fff;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  color: #fff;
+  text-transform: uppercase;
 }
 
+.card-skeleton {
+  background: linear-gradient(90deg, #f0f0f4 25%, #fafafa 50%, #f0f0f4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  height: 260px;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

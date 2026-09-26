@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import axios from 'axios'
 import Card from './Card'
 import Pokenav from './Pokenav'
@@ -6,6 +6,34 @@ import './App.css'
 
 const PAGE_SIZE = 16
 const TOTAL_POKEMON = 1302
+
+const POKEMON_TYPES = [
+  'all',
+  'normal',
+  'fire',
+  'water',
+  'grass',
+  'electric',
+  'ice',
+  'fighting',
+  'poison',
+  'ground',
+  'flying',
+  'psychic',
+  'bug',
+  'rock',
+  'ghost',
+  'dragon',
+  'steel',
+  'dark',
+  'fairy'
+]
+
+function getPokemonId(url) {
+  if (!url) return 0
+  const parts = url.split('/').filter(Boolean)
+  return parseInt(parts[parts.length - 1], 10) || 0
+}
 
 function App() {
   const [view, setView] = useState('list')
@@ -15,9 +43,11 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [loadingPage, setLoadingPage] = useState(false)
+  const [loadingType, setLoadingType] = useState(false)
   const [searchInput, setSearchInput] = useState('')
-
-  const totalPages = Math.ceil(allPokemon.length / PAGE_SIZE)
+  const [selectedType, setSelectedType] = useState('all')
+  const [sortBy, setSortBy] = useState('id-asc')
+  const [typeCache, setTypeCache] = useState({})
 
   useEffect(() => {
     axios
@@ -33,10 +63,65 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (allPokemon.length === 0) return
+    if (selectedType === 'all') return
+    if (typeCache[selectedType]) return
+
+    setLoadingType(true)
+    axios
+      .get(`https://pokeapi.co/api/v2/type/${selectedType}`)
+      .then((res) => {
+        const typePokemon = res.data.pokemon.map((entry) => entry.pokemon)
+        setTypeCache((prev) => ({ ...prev, [selectedType]: typePokemon }))
+        setLoadingType(false)
+      })
+      .catch((err) => {
+        console.error(`Error fetching ${selectedType} type Pokémon:`, err)
+        setLoadingType(false)
+      })
+  }, [selectedType, typeCache])
+
+  const sortedPokemon = useMemo(() => {
+    const baseList =
+      selectedType === 'all' ? allPokemon : typeCache[selectedType] || []
+
+    const query = searchInput.trim().toLowerCase()
+    const filtered = baseList.filter((p) => {
+      if (!query) return true
+      const id = getPokemonId(p.url)
+      return p.name.toLowerCase().includes(query) || String(id) === query
+    })
+
+    return filtered.sort((a, b) => {
+      if (sortBy === 'id-asc') {
+        return getPokemonId(a.url) - getPokemonId(b.url)
+      }
+      if (sortBy === 'id-desc') {
+        return getPokemonId(b.url) - getPokemonId(a.url)
+      }
+      if (sortBy === 'name-asc') {
+        return a.name.localeCompare(b.name)
+      }
+      if (sortBy === 'name-desc') {
+        return b.name.localeCompare(a.name)
+      }
+      return 0
+    })
+  }, [allPokemon, selectedType, typeCache, searchInput, sortBy])
+
+  const totalPages = Math.max(1, Math.ceil(sortedPokemon.length / PAGE_SIZE))
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchInput, selectedType, sortBy])
+
+  useEffect(() => {
+    if (sortedPokemon.length === 0) {
+      setPageData([])
+      return
+    }
 
     const start = (currentPage - 1) * PAGE_SIZE
-    const slice = allPokemon.slice(start, start + PAGE_SIZE)
+    const slice = sortedPokemon.slice(start, start + PAGE_SIZE)
 
     setLoadingPage(true)
     Promise.all(slice.map((p) => axios.get(p.url)))
@@ -48,11 +133,19 @@ function App() {
         console.error('Error fetching page details:', err)
         setLoadingPage(false)
       })
-  }, [allPokemon, currentPage])
+  }, [sortedPokemon, currentPage])
 
   function handleSearchSubmit() {
     if (!searchInput.trim()) return
-    setSelectedPokemon(searchInput.trim())
+    const query = searchInput.trim().toLowerCase()
+    const matched =
+      sortedPokemon.find(
+        (p) =>
+          p.name.toLowerCase() === query ||
+          String(getPokemonId(p.url)) === query
+      ) || sortedPokemon[0]
+
+    setSelectedPokemon(matched ? matched.name : searchInput.trim())
     setView('pokenav')
   }
 
@@ -96,29 +189,109 @@ function App() {
     )
   }
 
+  const isContentLoading = loading || loadingType
+
   return (
     <div className="pokemon-list-page">
       <div className="list-topbar">
         <div className="topbar-left">
-          <button className="return-btn" onClick={() => { setSelectedPokemon(''); setView('pokenav') }}>
+          <button
+            className="return-btn"
+            onClick={() => {
+              setSelectedPokemon('')
+              setView('pokenav')
+            }}
+          >
             Pokenav
           </button>
         </div>
         <div className="topbar-center">
           <div className="list-search">
-            <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}onKeyDown={handleKeyDown} placeholder="Search Pokémon…"/>
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Search Pokémon or ID…"
+            />
             <button onClick={handleSearchSubmit}>Fetch Pokémon</button>
           </div>
         </div>
-        <div className="topbar-right"></div>
+        <div className="topbar-right">
+          <span className="header-brand">Sato&apos;s Pokedex</span>
+        </div>
       </div>
 
       <div className="list-title-container">
         <h1 className="list-title">Pokedex</h1>
       </div>
 
-      {loading ? (
+      <div className="list-controls-bar">
+        <div className="controls-group">
+          <label htmlFor="type-filter" className="control-label">
+            Type:
+          </label>
+          <select
+            id="type-filter"
+            className="control-select"
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+          >
+            {POKEMON_TYPES.map((t) => (
+              <option key={t} value={t}>
+                {t === 'all'
+                  ? 'All Types'
+                  : t.charAt(0).toUpperCase() + t.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="controls-group">
+          <label htmlFor="sort-by" className="control-label">
+            Sort by:
+          </label>
+          <select
+            id="sort-by"
+            className="control-select"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="id-asc">ID: Low to High</option>
+            <option value="id-desc">ID: High to Low</option>
+            <option value="name-asc">Name: A – Z</option>
+            <option value="name-desc">Name: Z – A</option>
+          </select>
+        </div>
+
+        {(searchInput || selectedType !== 'all') && (
+          <button
+            className="reset-filters-btn"
+            onClick={() => {
+              setSearchInput('')
+              setSelectedType('all')
+            }}
+          >
+            Clear Filters
+          </button>
+        )}
+      </div>
+
+      {isContentLoading ? (
         <p className="list-status">Loading Pokémon…</p>
+      ) : sortedPokemon.length === 0 ? (
+        <div className="no-results-container">
+          <p className="no-results-text">No Pokémon found matching your filters.</p>
+          <button
+            className="reset-filters-btn"
+            onClick={() => {
+              setSearchInput('')
+              setSelectedType('all')
+            }}
+          >
+            Reset Filters
+          </button>
+        </div>
       ) : (
         <>
           <div className={`pokemon-grid${loadingPage ? ' loading' : ''}`}>
@@ -140,7 +313,10 @@ function App() {
 
           <div className="pagination">
             <button
-              className="page-btn" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+              className="page-btn"
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
               Previous
             </button>
 
@@ -150,19 +326,27 @@ function App() {
                   …
                 </span>
               ) : (
-                <button className={`page-btn${p === currentPage ? ' active' : ''}`} key={p} onClick={() => goToPage(p)}>
+                <button
+                  className={`page-btn${p === currentPage ? ' active' : ''}`}
+                  key={p}
+                  onClick={() => goToPage(p)}
+                >
                   {p}
                 </button>
               )
             )}
 
-            <button className="page-btn" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+            <button
+              className="page-btn"
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
               Next
             </button>
           </div>
 
           <p className="page-info">
-            Page {currentPage} of {totalPages} &nbsp;·&nbsp; {allPokemon.length} Pokémon
+            Page {currentPage} of {totalPages} &nbsp;·&nbsp; {sortedPokemon.length} Pokémon
           </p>
         </>
       )}

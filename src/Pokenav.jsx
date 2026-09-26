@@ -72,6 +72,10 @@ function Pokenav({ onReturn, initialPokemon = '' }) {
       <div className="pokedex-frame">
         <Header onNavigate={onReturn} />
         <div className="pokedex-screen">
+          <div className="database-title-container">
+            <h1 className="database-title">Pokemon Database</h1>
+          </div>
+
           <div className="screen-upper">
             <div className="artwork-display">
               {value?.id ? (
@@ -143,8 +147,43 @@ function Pokenav({ onReturn, initialPokemon = '' }) {
                 </div>
                 <div className="desc-bar-right"></div>
               </div>
+
+              {value?.abilities && value.abilities.length > 0 && (
+                <div className="abilities-card">
+                  <span className="section-label">Abilities</span>
+                  <div className="abilities-list">
+                    {value.abilities.map((a, idx) => (
+                      <span
+                        key={idx}
+                        className={`ability-pill${a.is_hidden ? ' hidden-ability' : ''}`}
+                      >
+                        {a.ability.name.replace(/-/g, ' ')}
+                        {a.is_hidden && <span className="hidden-badge"> (Hidden)</span>}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
+
+          {value?.moves && value.moves.length > 0 && (
+            <div className="screen-lower">
+              <div className="moves-card">
+                <div className="moves-header">
+                  <span className="section-label">Move Pool</span>
+                  <span className="moves-count-badge">{value.moves.length} moves</span>
+                </div>
+                <div className="moves-list">
+                  {value.moves.map((m, idx) => (
+                    <span key={idx} className="move-pill">
+                      {m.move.name.replace(/-/g, ' ')}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="view-all-container">
             <button className="view-all-btn" onClick={onReturn}>

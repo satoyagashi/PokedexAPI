@@ -1,13 +1,14 @@
 import axios from 'axios'
 import './App.css'
 import Header from './Header.jsx'
-import Card from './Card'
+import Pokedex from './Pokedex'
 import { useState } from 'react'
 
 function App() {
   const [value, setValue] = useState(null)
   const [species, setSpecies] = useState(null)
   const [pokemon, setPokemon] = useState('')
+  const [view, setView] = useState('pokedex')
 
   function handleBtn() {
     if (!pokemon) return
@@ -58,19 +59,41 @@ function App() {
 
   const idFormatted = value?.id ? String(value.id).padStart(3, '0') : ''
 
+  function handleSearch(query) {
+    setPokemon(query)
+    const q = query.toLowerCase().trim()
+    axios
+      .get(`https://pokeapi.co/api/v2/pokemon/${q}`)
+      .then((response) => {
+        setValue(response.data)
+        return axios.get(response.data.species.url)
+      })
+      .then((speciesResponse) => {
+        setSpecies(speciesResponse.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching Pokemon:', error)
+      })
+  }
+
+  if (view === 'list') {
+    return (
+      <Pokedex
+        onReturn={() => setView('pokedex')}
+        onSearch={handleSearch}
+      />
+    )
+  }
+
   return (
     <div className="pokedex-app">
       <div className="pokedex-frame">
-        <Header />
+        <Header onNavigate={() => setView('list')} />
         <div className="pokedex-screen">
           <div className="screen-upper">
             <div className="artwork-display">
               {value?.id ? (
-                <img
-                  className="pokemon-artwork"
-                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${value.id}.png`}
-                  alt={value?.name || 'Pokemon'}
-                />
+                <img className="pokemon-artwork" src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${value.id}.png`} alt={value?.name || 'Pokemon'} />
               ) : (
                 <div className="artwork-placeholder"></div>
               )}
@@ -86,16 +109,11 @@ function App() {
                 </div>
 
                 <div className="btn">
-                  <input
-                    type="text"
-                    value={pokemon}
-                    onChange={handleInputChange}
-                    placeholder="Input Pokemon"
-                    onKeyDown={(e) => e.key === 'Enter' && handleBtn()}
-                  />
+                  <input type="text" value={pokemon} onChange={handleInputChange} placeholder="Search Pokemon" onKeyDown={(e) => e.key === 'Enter' && handleBtn()} />
                   <button onClick={handleBtn}>Fetch Pokemon</button>
                 </div>
               </div>
+
 
               <div className="middle-row">
                 <div className="gender-card">
@@ -108,7 +126,7 @@ function App() {
                 <div className="types-row">
                   {value?.types && value.types.length > 0 ? (
                     value.types.map((t, idx) => (
-                      <div key={idx} className={`type-pill type-${t.type.name}`}>
+                      <div key={idx} className={`type-pill ${t.type.name}-type`}>
                         {t.type.name.toUpperCase()}
                       </div>
                     ))
@@ -145,13 +163,6 @@ function App() {
                 <div className="desc-bar-right"></div>
               </div>
             </div>
-          </div>
-          <div className='pokemon-list'>
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
           </div>
         </div>
       </div>

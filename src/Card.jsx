@@ -14,7 +14,7 @@ function Card({ id, name, image, types }) {
             </h2>
             <div className="card-types">
                 {types && types.map((t, idx) => (
-                    <div key={idx} className={`type-pill type-${t.type.name}`}>
+                    <div key={idx} className={`type-pill ${t.type.name}-type`}>
                         {t.type.name.toUpperCase()}
                     </div>
                 ))}

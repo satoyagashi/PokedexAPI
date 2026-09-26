@@ -1,10 +1,12 @@
 import './Header.css';
 
-function Header() {
+function Header({ onNavigate }) {
   return (
     <header className="site-header">
       <div className="info">
-        <h2><span>▼</span> Pokedex </h2>
+        <button className="header-nav-btn" onClick={onNavigate}>
+          Pokedex
+        </button>
       </div>
     </header>
   )
